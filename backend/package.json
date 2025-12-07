@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for Auto-Generated Blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahmoudAshraf283/simple-auto-generated-blog.git"
+  },
+  "author": "mahmoud ashraf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mahmoudAshraf283/simple-auto-generated-blog/issues"
+  },
+  "homepage": "https://github.com/mahmoudAshraf283/simple-auto-generated-blog#readme"
+}
