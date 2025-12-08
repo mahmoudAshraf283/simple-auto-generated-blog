@@ -1,16 +1,88 @@
-# React + Vite
+# Auto-Generated Blog - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend application for the AI-powered blog.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Browse all AI-generated articles
+- View full article details
+- Generate new articles on demand
+- Responsive design with modern UI
+- Real-time data fetching from backend API
+- Loading states and error handling
 
-## React Compiler
+## 📋 Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 18+
+- Backend API running
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📁 Project Structure
+
+```
+frontend/src/
+├── api/
+│   └── client.js          # API client for backend calls
+├── pages/
+│   ├── ArticleList.jsx    # Home page - article grid
+│   ├── ArticleList.css    # Styling for article list
+│   ├── ArticleDetail.jsx  # Article detail page
+│   └── ArticleDetail.css  # Styling for article detail
+├── App.jsx                # Main app with routing
+├── App.css                # Global app styles
+├── main.jsx               # Entry point
+└── index.css              # Base CSS
+```
+
+## 🎨 Pages
+
+### Home Page (/)
+- Displays all articles in a responsive grid
+- Article count indicator
+- "Generate New Article" button
+- Article preview cards with title, preview, author, and date
+
+### Article Detail Page (/article/:id)
+- Full article content
+- Back navigation button
+- Author and timestamp
+- Formatted text display
+
+## 🔌 API Integration
+
+The frontend connects to the backend API at `http://localhost:`:
+
+- `GET /api/articles` - Fetch all articles
+- `GET /api/articles/:id` - Fetch single article
+- `POST /api/articles/generate` - Generate new article
+
+## 🎨 Design Features
+
+- Modern purple gradient theme
+- Card-based layout
+- Smooth hover animations
+- Responsive for mobile, tablet, and desktop
+- Loading spinners
+- Error states with retry options
+
+## 🔧 Technologies
+
+- **React** 18
+- **Vite** 5
+- **React Router** 6
+- **Axios** for API calls
+- **CSS3** with custom styling
+
+## 🐛 Troubleshooting
+
+### Backend Connection Issues
+
+If you see "Failed to load articles":
+1. Make sure backend is running: `cd ../backend && npm run dev`
+2. Verify backend is on port 3001
+3. Check `.env` file has correct `VITE_API_URL`
+
+## 👤 Author
+
+Mahmoud Ashraf
+- GitHub: [@mahmoudAshraf283](https://github.com/mahmoudAshraf283)
