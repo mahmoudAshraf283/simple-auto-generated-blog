@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
-const MODEL_URL = 'https://api-inference.huggingface.co/models/mistralai/Ministral-3-3B-Instruct-2512';
+const MODEL_URL = 'https://router.huggingface.co/models/mistralai/Ministral-3-3B-Instruct-2512';
 
 // Article topics for variety
 const topics = [
