@@ -1,28 +1,30 @@
-import cron from 'node-cron';
-import { generateArticle } from './aiClient.js';
-import Article from '../models/Article.js';
+import cron from "node-cron";
+import { generateArticle } from "./aiClient.js";
+import Article from "../models/Article.js";
 
 let isJobRunning = false;
 
 export async function generateAndSaveArticle() {
   if (isJobRunning) {
-    console.log('⏳ Article generation already in progress, skipping...');
+    console.log("Article generation already in progress, skipping...");
     return;
   }
 
   isJobRunning = true;
-  
+
   try {
-    console.log('🚀 Starting article generation...');
-    
+    console.log("Starting article generation...");
+
     const articleData = await generateArticle();
     const article = await Article.create(articleData);
-    
-    console.log(`Article created successfully! ID: ${article.id}, Title: "${article.title}"`);
-    
+
+    console.log(
+      `Article created successfully! ID: ${article.id}, Title: "${article.title}"`
+    );
+
     return article;
   } catch (error) {
-    console.error('Error generating article:', error);
+    console.error("Error generating article:", error);
     throw error;
   } finally {
     isJobRunning = false;
@@ -33,36 +35,63 @@ export async function generateAndSaveArticle() {
 export function startArticleScheduler() {
   // Cron format: minute hour day month dayOfWeek
   // '0 9 * * *' = Every day at 9:00 AM
-  const cronExpression = '0 9 * * *';
-  
+  const cronExpression = "0 9 * * *";
+
   cron.schedule(cronExpression, async () => {
-    console.log('Daily article generation triggered');
+    console.log("Daily article generation triggered");
     await generateAndSaveArticle();
   });
-  
+
   console.log(`Article scheduler started - will run daily at 9:00 AM`);
 }
 
 // For testing: Generate article immediately on startup if needed
 export async function generateInitialArticles() {
   const count = await Article.count();
-  
+
   if (count < 3) {
     console.log(`Current articles: ${count}/3. Generating initial articles...`);
-    
+
     const needed = 3 - count;
+    const today = new Date();
+
     for (let i = 0; i < needed; i++) {
       console.log(`\nGenerating article ${i + 1}/${needed}...`);
-      await generateAndSaveArticle();
-      
+
+      // Generate article
+      const articleData = await generateArticle();
+
+      // Calculate timestamp: 9 AM on consecutive days (today, yesterday, day before)
+      const articleDate = new Date(today);
+      articleDate.setDate(today.getDate() - (needed - 1 - i)); // Start from oldest
+      articleDate.setHours(9, 0, 0, 0); // Set to 9:00 AM
+
+      // Create article with custom timestamp
+      const article = await Article.createWithTimestamp(
+        articleData,
+        articleDate
+      );
+
+      console.log(
+        `Article created! ID: ${article.id}, Title: "${
+          article.title
+        }", Date: ${articleDate.toISOString()}`
+      );
+
       // Wait 5 seconds between generations to avoid rate limiting
       if (i < needed - 1) {
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
   } else {
-    console.log(`Already have ${count} articles. No need to generate initial content.`);
+    console.log(
+      `Already have ${count} articles. No need to generate initial content.`
+    );
   }
 }
 
-export default { startArticleScheduler, generateAndSaveArticle, generateInitialArticles };
+export default {
+  startArticleScheduler,
+  generateAndSaveArticle,
+  generateInitialArticles,
+};
