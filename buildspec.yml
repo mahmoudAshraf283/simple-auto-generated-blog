@@ -1,0 +1,48 @@
+version: 0.2
+
+# AWS CodeBuild specification for building and pushing Docker images to ECR
+# This file is used by AWS CodeBuild to automate the build process
+
+env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    # Note: AWS_ACCOUNT_ID should be set as an environment variable in CodeBuild project
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - BACKEND_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/blog-backend
+      - FRONTEND_REPO_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/blog-frontend
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - echo "Build started on `date`"
+
+  build:
+    commands:
+      - echo "Building Backend Docker image..."
+      - cd backend
+      - docker build -t $BACKEND_REPO_URI:latest -t $BACKEND_REPO_URI:$IMAGE_TAG .
+      - cd ..
+      
+      - echo "Building Frontend Docker image..."
+      - cd frontend
+      - docker build -t $FRONTEND_REPO_URI:latest -t $FRONTEND_REPO_URI:$IMAGE_TAG .
+      - cd ..
+
+  post_build:
+    commands:
+      - echo "Pushing Backend Docker images to ECR..."
+      - docker push $BACKEND_REPO_URI:latest
+      - docker push $BACKEND_REPO_URI:$IMAGE_TAG
+      
+      - echo "Pushing Frontend Docker images to ECR..."
+      - docker push $FRONTEND_REPO_URI:latest
+      - docker push $FRONTEND_REPO_URI:$IMAGE_TAG
+      
+      - echo "Build completed successfully on `date`"
+
+artifacts:
+  files:
+    - '**/*'
