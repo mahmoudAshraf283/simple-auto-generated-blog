@@ -5,8 +5,8 @@ version: 0.2
 
 env:
   variables:
-    AWS_DEFAULT_REGION: "us-east-1"
-    # Note: AWS_ACCOUNT_ID should be set as an environment variable in CodeBuild project
+    AWS_DEFAULT_REGION: "eu-north-1"
+    # Note: AWS_ACCOUNT_ID and VITE_API_URL should be set as environment variables in CodeBuild project
 
 phases:
   pre_build:
@@ -28,7 +28,7 @@ phases:
       
       - echo "Building Frontend Docker image..."
       - cd frontend
-      - docker build -t $FRONTEND_REPO_URI:latest -t $FRONTEND_REPO_URI:$IMAGE_TAG .
+      - docker build --build-arg VITE_API_URL=${VITE_API_URL:-http://13.60.16.140:3001} -t $FRONTEND_REPO_URI:latest -t $FRONTEND_REPO_URI:$IMAGE_TAG .
       - cd ..
 
   post_build:
